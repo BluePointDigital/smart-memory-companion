@@ -1,0 +1,22 @@
+[
+  {
+    "message_id": "msg_task",
+    "session_id": "session_task",
+    "seq_num": 1,
+    "role": "user",
+    "source_type": "conversation",
+    "content": "Database migration is blocked on schema review.",
+    "created_at": "2026-03-12T14:05:00Z",
+    "metadata": {}
+  },
+  {
+    "message_id": "msg_reply",
+    "session_id": "session_task",
+    "seq_num": 2,
+    "role": "assistant",
+    "source_type": "conversation",
+    "content": "I will keep that blocker in working memory.",
+    "created_at": "2026-03-12T14:05:30Z",
+    "metadata": {}
+  }
+]

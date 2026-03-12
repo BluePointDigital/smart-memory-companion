@@ -1,0 +1,17 @@
+node_modules/
+artifacts/
+*.zip
+*.tar.gz
+.DS_Store
+Thumbs.db
+
+smart-memory-orchestrator/node_modules/
+smart-memory-orchestrator/dist/
+smart-memory-orchestrator/data/
+smart-memory-orchestrator/.env
+
+smart-memory-ui/node_modules/
+smart-memory-ui/dist/
+smart-memory-ui/coverage/
+smart-memory-ui/.env
+smart-memory-ui/tsconfig.tsbuildinfo

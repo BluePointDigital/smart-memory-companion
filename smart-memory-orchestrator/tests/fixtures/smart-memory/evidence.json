@@ -1,0 +1,18 @@
+[
+  {
+    "memory_id": "mem_task",
+    "message_id": "msg_task",
+    "evidence_kind": "direct",
+    "confidence": 0.95,
+    "message": {
+      "message_id": "msg_task",
+      "session_id": "session_task",
+      "seq_num": 1,
+      "role": "user",
+      "source_type": "conversation",
+      "content": "Database migration is blocked on schema review.",
+      "created_at": "2026-03-12T14:05:00Z",
+      "metadata": {}
+    }
+  }
+]

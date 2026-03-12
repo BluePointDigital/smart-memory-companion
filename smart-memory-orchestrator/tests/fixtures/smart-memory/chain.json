@@ -1,0 +1,18 @@
+[
+  {
+    "memory": {
+      "id": "mem_task",
+      "memory_type": "task_state",
+      "status": "active",
+      "content": "Database migration is blocked on schema review.",
+      "importance_score": 0.92,
+      "confidence": 0.88,
+      "source_session_id": "session_task",
+      "source_message_ids": ["msg_task"],
+      "entities": ["database_migration", "schema_review"],
+      "evidence_count": 1,
+      "created_at": "2026-03-12T14:05:00Z",
+      "updated_at": "2026-03-12T14:05:00Z"
+    }
+  }
+]

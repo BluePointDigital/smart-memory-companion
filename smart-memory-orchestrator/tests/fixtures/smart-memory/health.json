@@ -1,0 +1,6 @@
+{
+  "status": "ok",
+  "embedder_loaded": true,
+  "embedder_model": "nomic-embed-text-v1.5",
+  "embedder_backend": "HashingTextEmbedder"
+}

@@ -1,0 +1,19 @@
+{
+  "openapi": "3.1.0",
+  "paths": {
+    "/health": {},
+    "/memories": {},
+    "/memory/{memory_id}": {},
+    "/memory/{memory_id}/history": {},
+    "/memory/{memory_id}/chain": {},
+    "/memory/{memory_id}/evidence": {},
+    "/retrieve": {},
+    "/transcripts/{session_id}": {},
+    "/transcript/message/{message_id}": {},
+    "/lanes/{lane_name}": {},
+    "/rebuild": {},
+    "/rebuild/{session_id}": {},
+    "/ingest": {},
+    "/transcripts/message": {}
+  }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "mem_identity",
+    "memory_type": "identity",
+    "status": "active",
+    "content": "I am James, the maintainer of Smart Memory.",
+    "importance_score": 0.95,
+    "confidence": 0.9,
+    "source_session_id": "session_identity",
+    "source_message_ids": ["msg_identity"],
+    "entities": ["james", "smart_memory"],
+    "evidence_count": 1,
+    "created_at": "2026-03-12T14:00:00Z",
+    "updated_at": "2026-03-12T14:00:00Z"
+  },
+  {
+    "id": "mem_task",
+    "memory_type": "task_state",
+    "status": "active",
+    "content": "Database migration is blocked on schema review.",
+    "importance_score": 0.92,
+    "confidence": 0.88,
+    "source_session_id": "session_task",
+    "source_message_ids": ["msg_task"],
+    "entities": ["database_migration", "schema_review"],
+    "evidence_count": 1,
+    "created_at": "2026-03-12T14:05:00Z",
+    "updated_at": "2026-03-12T14:05:00Z"
+  },
+  {
+    "id": "mem_reference",
+    "memory_type": "episodic",
+    "status": "active",
+    "content": "We discussed rollout timing last Tuesday.",
+    "importance_score": 0.6,
+    "confidence": 0.7,
+    "source_session_id": "session_task",
+    "source_message_ids": ["msg_rollout"],
+    "entities": ["rollout"],
+    "evidence_count": 1,
+    "created_at": "2026-03-10T11:00:00Z",
+    "updated_at": "2026-03-10T11:00:00Z"
+  }
+]

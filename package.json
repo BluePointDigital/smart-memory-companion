@@ -1,0 +1,17 @@
+{
+  "name": "smart-memory-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/launcher.mjs dev",
+    "app": "node scripts/launcher.mjs app",
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/test.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "package:release": "node scripts/package-release.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

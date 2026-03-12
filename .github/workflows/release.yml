@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-package-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            smart-memory-orchestrator/package-lock.json
+            smart-memory-ui/package-lock.json
+
+      - name: Install orchestrator dependencies
+        working-directory: smart-memory-orchestrator
+        run: npm ci
+
+      - name: Install UI dependencies
+        working-directory: smart-memory-ui
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Prepare release staging directory
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
+        run: npm run package:release
+
+      - name: Zip staged release
+        run: |
+          STAGING_DIR="artifacts/smart-memory-companion-${GITHUB_REF_NAME}"
+          ZIP_PATH="${STAGING_DIR}.zip"
+          cd artifacts
+          zip -r "$(basename "$ZIP_PATH")" "$(basename "$STAGING_DIR")"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.zip
+          generate_release_notes: true

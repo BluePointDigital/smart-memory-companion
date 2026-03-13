@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import path from "node:path";
 
 import cors from "@fastify/cors";
 import fastifyStatic from "@fastify/static";
@@ -43,6 +44,7 @@ type BuildAppOptions = {
 };
 
 const API_PREFIX = "/api";
+const STATIC_ASSETS_PREFIX = "/assets/";
 
 function requestOrigin(request: FastifyRequest): string {
   return `${request.protocol}://${request.headers.host ?? "127.0.0.1:4100"}`;
@@ -52,19 +54,43 @@ function toErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
+function requestPath(request: FastifyRequest): string {
+  try {
+    return new URL(request.raw.url ?? "/", requestOrigin(request)).pathname;
+  } catch {
+    return request.raw.url ?? "/";
+  }
+}
+
+function isFileRequest(pathname: string): boolean {
+  return /\/[^/]+\.[^/]+$/.test(pathname);
+}
+
 async function handleSpaRequest(
-  app: FastifyInstance,
   appConfig: ResolvedOrchestratorConfig,
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
   const url = request.raw.url ?? "/";
-  if (url.startsWith(API_PREFIX)) {
-    return reply.callNotFound();
+  const pathname = requestPath(request);
+
+  if (pathname.startsWith(API_PREFIX)) {
+    return reply.status(404).send({
+      message: "Route not found",
+    });
+  }
+
+  if (pathname.startsWith(STATIC_ASSETS_PREFIX) || isFileRequest(pathname)) {
+    return reply.status(404).type("text/plain").send("Not found");
   }
 
   if (appConfig.uiServing.mode === "static" && fs.existsSync(appConfig.uiServing.distPath)) {
-    return reply.sendFile("index.html");
+    const indexPath = path.join(appConfig.uiServing.distPath, "index.html");
+    if (fs.existsSync(indexPath)) {
+      return reply
+        .type("text/html; charset=utf-8")
+        .send(fs.readFileSync(indexPath, "utf8"));
+    }
   }
 
   if (appConfig.uiServing.mode === "external" && appConfig.uiServing.devServerUrl) {
@@ -121,11 +147,13 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   });
 
   if (appConfig.uiServing.mode === "static" && fs.existsSync(appConfig.uiServing.distPath)) {
-    await app.register(fastifyStatic, {
-      root: appConfig.uiServing.distPath,
-      prefix: "/",
-      wildcard: false,
-    });
+    const assetsPath = path.join(appConfig.uiServing.distPath, "assets");
+    if (fs.existsSync(assetsPath)) {
+      await app.register(fastifyStatic, {
+        root: assetsPath,
+        prefix: STATIC_ASSETS_PREFIX,
+      });
+    }
   } else if (appConfig.uiServing.mode === "static") {
     supervisor.noteStartupError(
       `Static UI bundle was not found at ${appConfig.uiServing.distPath}`,
@@ -746,7 +774,7 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
       .then((response) => JSON.parse(response.body)),
   );
 
-  app.get("/*", (request, reply) => handleSpaRequest(app, appConfig, request, reply));
+  app.setNotFoundHandler((request, reply) => handleSpaRequest(appConfig, request, reply));
 
   return app;
 }

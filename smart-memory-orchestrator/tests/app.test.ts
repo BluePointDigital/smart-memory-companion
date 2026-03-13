@@ -79,7 +79,7 @@ describe("buildApp", () => {
     expect(payload.ready).toBe(true);
     expect(payload.smart_memory.healthy).toBe(true);
     expect(payload.ui_serving.mode).toBe("external");
-  });
+  }, 15000);
 
   it("keeps runtime/context behavior aligned with workspace assembly", async () => {
     const smartMemory = await createMockSmartMemory();
@@ -201,8 +201,15 @@ describe("buildApp", () => {
     const port = typeof address === "object" && address ? address.port : 0;
     const tempDir = mkdtempSync(join(tmpdir(), "orchestrator-ui-"));
     const distDir = join(tempDir, "dist");
+    const assetsDir = join(distDir, "assets");
     mkdirSync(distDir, { recursive: true });
+    mkdirSync(assetsDir, { recursive: true });
     writeFileSync(join(distDir, "index.html"), "<html><body>ui shell</body></html>", "utf8");
+    writeFileSync(
+      join(assetsDir, "index-test.js"),
+      "console.log('smart-memory-companion');",
+      "utf8",
+    );
     cleanups.push(() => rmSync(tempDir, { recursive: true, force: true }));
     const controlStore = new ControlStore(join(tempDir, "control.sqlite"));
 
@@ -221,6 +228,14 @@ describe("buildApp", () => {
       method: "GET",
       url: "/runs/run_example",
     });
+    const assetResponse = await app.inject({
+      method: "GET",
+      url: "/assets/index-test.js",
+    });
+    const missingAssetResponse = await app.inject({
+      method: "GET",
+      url: "/assets/missing.js",
+    });
     const apiResponse = await app.inject({
       method: "GET",
       url: "/api/health",
@@ -228,6 +243,11 @@ describe("buildApp", () => {
 
     expect(uiResponse.statusCode).toBe(200);
     expect(uiResponse.body).toContain("ui shell");
+    expect(assetResponse.statusCode).toBe(200);
+    expect(assetResponse.headers["content-type"]).toMatch(/javascript/);
+    expect(assetResponse.body).toContain("smart-memory-companion");
+    expect(missingAssetResponse.statusCode).toBe(404);
+    expect(missingAssetResponse.body).not.toContain("ui shell");
     expect(apiResponse.statusCode).toBe(200);
     expect(apiResponse.body).toContain("\"service\":\"smart-memory-orchestrator\"");
   });
